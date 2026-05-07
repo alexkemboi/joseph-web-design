@@ -11,7 +11,7 @@
 <body>
 
 
-    <div class="login-container " id="loginsection">
+    <!-- <div class="login-container " id="loginsection">
         <h2>Login Form</h2>
         <form action="#" method="get" class="login-form">
             <div class="input-group">
@@ -28,6 +28,46 @@
         <div class="signup-link">
             <p>Don't have an account?<a href="">Sign Up</a></p>
         </div>
+    </div> -->
+  <div class="table-container">
+
+        <h2>Grades List</h2>
+
+        <table id="gradesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>GRADE</th>
+                    <th>REMARK</th>
+                    <th>MARKS RANGE</th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="login-container" id="loginsection">  
+        
+  
+        <h2>Add Grade</h2>    
+        <form class="grades-form">        
+            <div class="input-group">            
+                <label for="grade">Grade</label>            
+                <input  type="text"   id="grade" name="grade"  placeholder="Enter grade e.g A, B+" required >        
+            </div>       
+             <div class="input-group">            
+                    <label for="remark">Remark</label>            
+                    <input type="text" id="remark" name="remark"    placeholder="Enter remark"  required  >        
+            </div>        
+            <div class="input-group">            
+                        <label for="marksrange">Marks Range</label>            
+                        <input type="text"   id="marksrange"   name="marksrange"  placeholder="e.g 80-100"  required  >        
+            </div>       
+        </form>
+        <button type="button" class="login-btn" onclick="saveGrade()" > Save Grade  </button>    
     </div>
 
 
@@ -192,7 +232,107 @@
     </main>
 
 
-    <script>
+<script>
+
+async function loadGrades() {
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:3000/api/read/GRADES"
+                );
+
+                const result = await response.json();
+
+                console.log(result);
+
+                const tableBody = document.getElementById("tableBody");
+
+                tableBody.innerHTML = "";
+
+                result.data.forEach(row => {
+
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${row.ID}</td>
+                            <td>${row.GRADE}</td>
+                            <td>${row.REMARK}</td>
+                            <td>${row.MARKSRANGE}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (error) {
+
+                console.error("Error loading grades:", error);
+
+            }
+        }
+
+        loadGrades();
+
+
+
+
+
+
+async function saveGrade(){
+
+    let  grade="B";
+    let  marks="A";
+    let  remark="A";
+    grade=  document.getElementById('grade').value;
+    marks=  document.getElementById('marksrange').value;
+    remark=  document.getElementById('remark').value;
+        alert(grade + marks + remark);
+        console.log(grade + marks + remark);
+ const payload = {
+        GRADE: grade,
+        REMARK: remark,
+        MARKSRANGE: marks
+    };
+
+    console.log(payload);
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/create/GRADES",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        const result = await response.json();
+
+        console.log(result);
+
+        alert("Grade saved successfully");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Failed to save grade");
+
+    }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
 
